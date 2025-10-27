@@ -1,6 +1,7 @@
 import { User } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
 
+
 const About = () => {
   const [ref, isInView] = useInView();
 
@@ -9,19 +10,19 @@ const About = () => {
   name: 'Founder',
   role: 'Mustafa',
   description: ' 23+ years of experience in Civil Engineering across the Arab region.',
-  image: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400',
+  image: '/photos/Founder.jpeg',
 },
     {
       name: 'Co-Founder',
       role: 'Mustafa',
       description: 'Designing curriculum that bridges academia with real-world industry requirements.',
-      image: 'https://images.pexels.com/photos/3777943/pexels-photo-3777943.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image: '/photos/Founder.jpeg',
     },
     {
       name: 'Cloud Engineer',
-      role: 'Rasiq Turabi',
+      role: 'Mustafa',
       description: 'Website coder and designer crafting seamless digital experiences for learners.',
-      image: 'https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=400',
+      image:'/photos/Founder.jpeg',
     },
   ];
 
