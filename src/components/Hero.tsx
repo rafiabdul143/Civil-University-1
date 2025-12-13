@@ -1,92 +1,295 @@
-import { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Hero = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+interface Section {
+  id: number;
+  title: string;
+  text: string;
+  button: string;
+  img: string;
+}
 
-  const slides = [
-    {
-      text: 'Welcome to Civil University',
-      image: 'https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    },
-    {
-      text: 'Bridging the gap between freshers and market demand',
-      image: 'https://images.pexels.com/photos/1216589/pexels-photo-1216589.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    },
-    {
-      text: 'Learn from industry experts',
-      image: 'https://images.pexels.com/photos/159306/construction-site-build-construction-work-159306.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    },
-    {
-      text: 'Shape your future in civil engineering',
-      image: 'https://images.pexels.com/photos/3862130/pexels-photo-3862130.jpeg?auto=compress&cs=tinysrgb&w=1920',
-    },
-  ];
+interface TypedTextState {
+  text: string;
+  isTyping: boolean;
+}
 
+const sections: Section[] = [
+  {
+    id: 1,
+    title: "Welcome To Buniyaad",
+    text: "Empowering Future Engineers with Knowledge, Innovation & Purpose.",
+    button: "Explore Buniyaad",
+    img: "/photos/Main.jpg",
+  },
+  {
+    id: 2,
+    title: "Construpedia",
+    text: "Your Ultimate Civil Engineering Hub for Concepts, Designs & Practical Learning.",
+    button: "Explore Construpedia",
+    img: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1920&q=80",
+  },
+  {
+    id: 3,
+    title: "About Us",
+    text: "Meet the minds behind Buniyaad—building a strong foundation for future innovators.",
+    button: "Know More",
+    img: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1920&q=80",
+  },
+  {
+    id: 4,
+    title: "Join Our Journey",
+    text: "Stay connected with our mission to uplift and inspire young engineers.",
+    button: "Contact Us",
+    img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80",
+  },
+];
+
+export default function Hero() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const navigate = useNavigate();
+
+  const [typedTexts, setTypedTexts] = useState<TypedTextState[]>(
+    sections.map(() => ({ text: "", isTyping: false }))
+  );
+
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
+
+  // Detect Mobile
+  useEffect(() => {
+    const update = () => setIsMobile(window.innerWidth < 1024);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  // Show/hide hero for scroll
+  useEffect(() => {
+    const onScroll = () => {
+      const heroHeight = window.innerHeight;
+      setIsHeroVisible(window.scrollY < heroHeight - 50);
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Typewriter effect
+  useEffect(() => {
+    const updateTypedText = (index: number) => {
+      const section = sections[index];
+      if (typedTexts[index].text === section.text || typedTexts[index].isTyping)
+        return;
+
+      setTypedTexts((prev) => {
+        const c = [...prev];
+        c[index] = { text: "", isTyping: true };
+        return c;
+      });
+
+      let charIndex = 0;
+      const interval = setInterval(() => {
+        if (charIndex < section.text.length) {
+          setTypedTexts((prev) => {
+            const c = [...prev];
+            c[index] = {
+              ...c[index],
+              text: section.text.substring(0, charIndex + 1),
+            };
+            return c;
+          });
+          charIndex++;
+        } else {
+          clearInterval(interval);
+          setTypedTexts((prev) => {
+            const c = [...prev];
+            c[index] = { text: section.text, isTyping: false };
+            return c;
+          });
+        }
+      }, 40);
+    };
+
+    updateTypedText(currentIndex);
+  }, [currentIndex]);
+
+  // Scroll Listener
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const index = Math.round(container.scrollLeft / container.clientWidth);
+      if (index !== currentIndex) setCurrentIndex(index);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [currentIndex]);
+
+  // Scroll to section
+  const scrollToSection = useCallback((index: number) => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        left: index * containerRef.current.clientWidth,
+        behavior: "smooth",
+      });
+    }
+  }, []);
+
+  // Auto scroll
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
+      const nextIndex = (currentIndex + 1) % sections.length;
+      scrollToSection(nextIndex);
     }, 5000);
-
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [currentIndex, scrollToSection]);
 
-  const scrollToExplore = () => {
-    const element = document.getElementById('explore');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  // Keyboard
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft")
+        scrollToSection((currentIndex - 1 + sections.length) % sections.length);
+      if (e.key === "ArrowRight" || e.key === " ")
+        scrollToSection((currentIndex + 1) % sections.length);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [currentIndex, scrollToSection]);
+
+  // Swipe Handling
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let startX = 0;
+
+    const start = (e: TouchEvent) => (startX = e.touches[0].clientX);
+    const end = (e: TouchEvent) => {
+      const diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0)
+          scrollToSection((currentIndex + 1) % sections.length);
+        else
+          scrollToSection((currentIndex - 1 + sections.length) % sections.length);
+      }
+    };
+
+    container.addEventListener("touchstart", start);
+    container.addEventListener("touchend", end);
+
+    return () => {
+      container.removeEventListener("touchstart", start);
+      container.removeEventListener("touchend", end);
+    };
+  }, [currentIndex, scrollToSection]);
+
+  // Navigation Logic
+  const handleNavigation = (id: number) => {
+    const routes: Record<number, string> = {
+      1: "/explor",
+      2: "/construpedia",
+      3: "/aboutus",
+      4: "/Contact",
+    };
+    navigate(routes[id] || "/");
   };
 
   return (
-    <section id="home" className="relative h-screen overflow-hidden">
-      {slides.map((slide, index) => (
-        <div
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${slide.image})` }}
-          >
-            <div className="absolute inset-0 bg-black/70" />
-          </div>
-          <div className="relative h-full flex items-center justify-center px-4">
-            <h1 className="text-3xl sm:text-5xl  text-white md:text-7xl font-bold text-center max-w-5xl leading-tight animate-fadeIn">
-              {slide.text}
-            </h1>
-          </div>
-        </div>
-      ))}
+    <div className="relative w-full h-screen">
 
-      <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-              index === currentSlide ? 'bg-white w-8' : 'bg-white/50'
-            }`}
-          />
+      {/* SLIDER */}
+      <div
+        ref={containerRef}
+        className="w-full h-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar"
+      >
+        {sections.map((sec, i) => (
+          <section
+            key={sec.id}
+            className="w-full h-full flex-shrink-0 snap-center relative"
+            style={{
+              backgroundImage: `url(${sec.img})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          >
+            <div className="absolute inset-0 bg-black/40"></div>
+
+            <div className="relative z-10 h-full flex flex-col justify-center px-10 lg:px-24 max-w-2xl text-white">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+                {sec.title}
+              </h1>
+
+              <p className="text-lg sm:text-xl md:text-2xl mb-6">
+                {typedTexts[i].text}
+              </p>
+
+              <button
+                onClick={() => handleNavigation(sec.id)}
+                className="px-6 py-3 bg-white text-black text-lg rounded-full shadow-md hover:bg-gray-200 transition"
+              >
+                {sec.button}
+              </button>
+            </div>
+          </section>
         ))}
       </div>
 
-      <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2">
-        <button
-          onClick={scrollToExplore}
-          className="px-8 py-3 bg-white text-black font-semibold text-lg hover:bg-black hover:text-white transition-all duration-300 hover:scale-105 active:scale-95 border-2 border-white"
-        >
-          Explore Now
-        </button>
-      </div>
+      {/* DOTS */}
+      {isHeroVisible && (
+        <div className="fixed bottom-6 w-full flex justify-center gap-3 z-50">
+          {sections.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollToSection(i)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                currentIndex === i ? "bg-white scale-125" : "bg-white/40"
+              }`}
+            ></button>
+          ))}
+        </div>
+      )}
 
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <ChevronDown size={32} className="text-white" />
-      </div>
-    </section>
+      {/* ARROWS (Desktop Only) */}
+      {!isMobile && isHeroVisible && (
+        <>
+          <button
+            onClick={() =>
+              scrollToSection((currentIndex - 1 + sections.length) % sections.length)
+            }
+            className="fixed left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full
+                       bg-white/20 hover:bg-white/40 flex items-center justify-center
+                       backdrop-blur-sm z-50 transition"
+          >
+            ❮
+          </button>
+
+          <button
+            onClick={() =>
+              scrollToSection((currentIndex + 1) % sections.length)
+            }
+            className="fixed right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full
+                       bg-white/20 hover:bg-white/40 flex items-center justify-center
+                       backdrop-blur-sm z-50 transition"
+          >
+            ❯
+          </button>
+        </>
+      )}
+
+      {/* MOBILE SWIPE HINT */}
+      {isMobile && isHeroVisible && (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 text-white/70 text-xs flex gap-2 animate-pulse z-50">
+          ← Swipe →
+        </div>
+      )}
+
+      {/* Hide Scrollbar */}
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+      `}</style>
+    </div>
   );
-};
-
-export default Hero;
+}

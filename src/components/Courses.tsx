@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Download, ExternalLink, Search, FileText } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
+import {construpedia} from '../pages/Construpedia';
+import { Link } from 'react-router-dom';
 
 const Courses = () => {
   const [ref, isInView] = useInView();
@@ -126,43 +128,7 @@ const Courses = () => {
           Top Civil Engineering Courses
         </h2>
 
-        {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search courses... (e.g., site engineering, autocad drafting, architecture, safety officer)"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent text-lg"
-            />
-          </div>
-          
-          {/* Search Suggestions */}
-          <div className="mt-4 flex flex-wrap gap-2 justify-center">
-            <span className="text-sm text-gray-600">Try:</span>
-            {['site engineering', 'autocad drafting', 'architecture', 'safety officer'].map((suggestion) => (
-              <button
-                key={suggestion}
-                onClick={() => setSearchTerm(suggestion)}
-                className="text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-full transition-colors"
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Results Count */}
-        <div className="text-center mb-8">
-          <p className="text-gray-600">
-            Showing {filteredCourses.length} of {courses.length} courses
-            {searchTerm && (
-              <span> for "<span className="font-semibold">{searchTerm}</span>"</span>
-            )}
-          </p>
-        </div>
+    
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -227,7 +193,20 @@ const Courses = () => {
               Show All Courses
             </button>
           </div>
+          
         )}
+
+
+<div className="flex justify-center mt-12">
+  <Link
+    to="/construpedia"
+    className="inline-block px-8 py-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-all"
+  >
+    Explore All Courses →
+  </Link>
+</div>
+
+
       </div>
     </section>
   );
