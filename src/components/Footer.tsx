@@ -58,11 +58,21 @@ const Footer = () => {
       </div>
 
       {/* Bottom Copyright */}
+   
       <div className="border-t border-gray-700 mt-10 pt-6 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} Buniyaad.com. All Rights Reserved.
-        <br />
-        Designed & Developed by <span className="text-white">Abdul Rafi</span>.
-      </div>
+  © {new Date().getFullYear()} Buniyaad.com. All Rights Reserved.
+  <br />
+  Designed & Developed by{" "}
+  <a
+    href="https://abdulrafi.vercel.app/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-white underline hover:text-gray-300"
+  >
+    Abdul Rafi
+  </a>.
+</div>
+
     </footer>
   );
 };
