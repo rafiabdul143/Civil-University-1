@@ -31,19 +31,20 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
           <div className="flex space-x-4">
-            <a href="#" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
+            <a href="https://www.facebook.com/share/17gSqpJXHX/
+" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
               <FaFacebookF size={16} />
             </a>
-            <a href="#" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
+            <a href="https://www.instagram.com/buniyaadec?igsh=N2NlNXVoam5zZGQw" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
               <FaInstagram size={16} />
             </a>
-            <a href="#" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
+            <a href="https://x.com/Buniyaadec" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
               <FaXTwitter size={16} />
             </a>
             <a href="#" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
               <FaLinkedinIn size={16} />
             </a>
-            <a href="#" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
+            <a href="https://youtube.com/@buniyaadec?si=PaTcoOhHBtMhkEJ5" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
               <FaYoutube size={16} />
             </a>
           </div>
