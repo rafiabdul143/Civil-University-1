@@ -1,4 +1,5 @@
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -37,7 +38,7 @@ const Footer = () => {
               <FaInstagram size={16} />
             </a>
             <a href="#" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
-              <FaTwitter size={16} />
+              <FaXTwitter size={16} />
             </a>
             <a href="#" className="p-2 border border-gray-600 rounded-full hover:bg-white hover:text-black transition">
               <FaLinkedinIn size={16} />
