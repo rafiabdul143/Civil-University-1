@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Wrench, Users, Briefcase, FileText, HardHat, Calculator, Newspaper, Library, FolderOpen } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
-import Footer from '../components/Footer';
+
 
 const Explore = () => {
   const [ref, isInView] = useInView();
