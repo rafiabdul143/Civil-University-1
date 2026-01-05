@@ -411,7 +411,7 @@ const AboutUs = () => {
 
 
       {/* Footer */}
-      <Footer/>
+     
     </div>
   );
 };
