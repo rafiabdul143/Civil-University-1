@@ -249,7 +249,7 @@ const Explore = () => {
           </p>
         </div>
       </div>
-      <Footer />
+  
     </section>
   );
 };
