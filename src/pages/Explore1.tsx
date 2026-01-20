@@ -117,7 +117,7 @@ const Explore = () => {
         
         <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Explore <span className="text-blue-400">Buniyaad</span>
+            Explore <span className="text-blue-400">Buniyaadec</span>
           </h1>
           <p className="mt-6 text-xl text-gray-200 leading-relaxed max-w-3xl mx-auto">
             A comprehensive platform for Civil Engineering Education, Innovation, and Professional Growth.

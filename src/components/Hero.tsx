@@ -188,14 +188,45 @@ export default function Hero() {
 
   // Navigation Logic
   const handleNavigation = (id: number) => {
-    const routes: Record<number, string> = {
-      1: "/explor",
-      2: "/construpedia",
-      3: "/aboutus",
-      4: "/Contact",
-    };
-    navigate(routes[id] || "/");
+  const routes: Record<number, {type: 'route' | 'anchor', target: string}> = {
+    1: { type: 'route', target: '/explor' },
+    2: { type: 'route', target: '/construpedia' },
+    3: { type: 'route', target: '/aboutus' },
+    4: { type: 'anchor', target: 'contact' }, // This is an anchor, not a route
   };
+
+  const route = routes[id] || { type: 'route', target: '/' };
+
+  if (route.type === 'anchor') {
+    // Handle anchor/scrolling navigation
+    if (location.pathname !== '/') {
+      // Navigate to home page first
+      navigate('/');
+      // Wait for page to load, then scroll to section
+      setTimeout(() => {
+        const element = document.getElementById(route.target);
+        if (element) {
+          element.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 300);
+    } else {
+      // Already on home page, just scroll
+      const element = document.getElementById(route.target);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  } else {
+    // Handle regular route navigation
+    navigate(route.target);
+  }
+};
 
   return (
     <div className="relative w-full h-screen">

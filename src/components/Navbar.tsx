@@ -22,26 +22,49 @@ const Navbar = ({ activeSection }: NavbarProps) => {
 const handleNavigation = (item: any) => {
   setIsMenuOpen(false); // ✅ Close menu on click
 
-  if (item.path === '/') {
+  // Check if path contains a hash (like /#contact)
+  const hasHash = item.path.includes('#');
+  
+  if (hasHash) {
+    const [basePath, sectionId] = item.path.split('#');
+    
+    if (location.pathname !== basePath && basePath !== '') {
+      // Navigate to base path first (like '/')
+      navigate(basePath);
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+    } else {
+      // Already on the page, just scroll to section
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  } else if (item.path === '/') {
+    // Handle home page with section IDs
     if (location.pathname !== '/') {
-      navigate('/'); 
+      navigate('/');
       setTimeout(() => scrollToSection(item.id), 300);
     } else {
       scrollToSection(item.id);
     }
   } else {
-    navigate(item.path); // ✅ Works even for /construpedia
+    navigate(item.path); // ✅ Works for normal routes like /construpedia
   }
 };
-
 
   const navItems = [
     { id: 'home', label: 'Home', path: '/' },
       { id: 'explor', label: 'Explore', path: '/explor' },
-      {id: 'aboutus', label: 'About Us', path: '/aboutus' },
+
  
     { id: 'construpedia', label: 'Construpedia', path: '/construpedia' },
-    { id: 'contact', label: 'Contact Us', path: '/' },
+         {id: 'aboutus', label: 'About Us', path: '/aboutus' },
+     { id: 'contact', label: 'Contact Us', path: '/#contact' }, 
 
   ];
 
@@ -51,7 +74,7 @@ const handleNavigation = (item: any) => {
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center gap-3">
             <div className="text-xl sm:text-2xl font-bold tracking-tight text-black">
-              Buniyaad
+              Buniyaadec
             </div>
             <div className="border-l-2 border-blue-600 pl-4">
               <span className="text-sm font-bold text-gray-900 tracking-tight">

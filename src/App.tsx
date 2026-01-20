@@ -45,7 +45,7 @@ function App() {
         <Route path="/explor" element={<Explor />} />
 
         {/* 4. Contact Route (Linked from the Hero section, ID 4) */}
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/" element={<Contact />} />
 
       </Routes>
 
