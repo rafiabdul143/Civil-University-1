@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Contact = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isSent, setIsSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [emailjs, setEmailjs] = useState<any>(null);
 
   const [formData, setFormData] = useState({
@@ -31,6 +31,14 @@ const Contact = () => {
         setEmailjs(module);
       } catch (err) {
         console.error('Failed to load EmailJS:', err);
+        toast.error('Failed to initialize contact form. Please refresh the page.', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     };
     init();
@@ -39,16 +47,29 @@ const Contact = () => {
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     if (!emailjs) {
-      setError('Email service not available. Please try again later.');
+      toast.error('Contact service is not available. Please try again later.', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
 
     if (!formData.name.trim() || !formData.email.trim() || 
         !formData.subject.trim() || !formData.message.trim()) {
-      setError('Please fill in all fields');
+      toast.warning('Please fill in all required fields', {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
 
@@ -60,7 +81,7 @@ const Contact = () => {
         EMAILJS_CONFIG.serviceId,
         EMAILJS_CONFIG.adminTemplate,
         {
-          to_email: 'buniyaadec@gmail.com', // Replace with your admin email
+          to_email: 'buniyaadec@gmail.com',
           name: formData.name,
           user_email: formData.email,
           subject: formData.subject,
@@ -81,20 +102,56 @@ const Contact = () => {
         }
       );
 
-      setIsSent(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      // Professional success toast
+      toast.success(
+        <div className="flex flex-col">
+          <span className="font-semibold">Message Sent Successfully!</span>
+          <span className="text-sm opacity-90">
+            Thank you, {formData.name}. We'll get back to you within 24 hours.
+          </span>
+          <span className="text-xs opacity-75 mt-1">
+            A confirmation has been sent to {formData.email}
+          </span>
+        </div>, 
+        {
+          position: "top-right",
+          autoClose: 6000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
 
-      setTimeout(() => setIsSent(false), 5000);
+      // Reset form
+      setFormData({ name: '', email: '', subject: '', message: '' });
 
     } catch (err: any) {
       console.error('Email sending error:', err);
       
-      let errorMsg = 'Failed to send message. ';
-      if (err.text) {
+      let errorMsg = 'Failed to send message. Please try again later.';
+      if (err.text?.includes('rate limit')) {
+        errorMsg = 'Too many requests. Please wait a moment before trying again.';
+      } else if (err.text?.includes('invalid')) {
+        errorMsg = 'Invalid email address. Please check and try again.';
+      } else if (err.text) {
         errorMsg += err.text;
       }
       
-      setError(errorMsg);
+      toast.error(
+        <div className="flex flex-col">
+          <span className="font-semibold">Message Not Sent</span>
+          <span className="text-sm opacity-90">{errorMsg}</span>
+        </div>, 
+        {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        }
+      );
       
     } finally {
       setIsLoading(false);
@@ -105,12 +162,23 @@ const Contact = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError(null);
   };
 
   if (!emailjs) {
     return (
       <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 text-black">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-5xl font-bold mb-8">Get In Touch</h2>
           <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
@@ -124,36 +192,23 @@ const Contact = () => {
 
   return (
     <section id="contact" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 text-black">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      
       <div className="max-w-3xl mx-auto">
         <h2 className="text-5xl font-bold text-center mb-12">
           Get In Touch
         </h2>
-
-        {/* Success Message */}
-        {isSent && (
-          <div className="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5" />
-              <div>
-                <p className="font-semibold">Message Sent Successfully!</p>
-                <p className="text-sm">We've received your message and will get back to you soon.</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5" />
-              <div>
-                <p className="font-semibold">Error</p>
-                <p className="text-sm">{error}</p>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Contact Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
